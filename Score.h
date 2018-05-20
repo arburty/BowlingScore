@@ -11,20 +11,20 @@ using namespace std;
 class Score {
 	public:
         Score();
-        Score(Game *);
+        Score(Game);
         ~Score();
         int scoring();
         void setScore(const int);
         bool nextFrame();
         int getScore() const;
-        Frame * getFrame(const int) const;
+        Frame getFrame(const int) const;
         Frame10 getFrame10() const;
         int checkClosed() const;
         int ballWorth(const char) const;
     private:
         int score;
         int currFrame;
-        Game * game;
+        Game game;
 };
 
 std::ostream &operator<<(std::ostream &, const Score &);
