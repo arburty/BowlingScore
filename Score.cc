@@ -12,22 +12,19 @@ using namespace std;
 Score::Score() : score(0), currFrame(0){
 }
 
-Score::Score(Game *g) : score(0), currFrame(0), game(g) {
+Score::Score(Game g) : score(0), currFrame(0), game(g) {
     scoring();
 }
 
 Score::~Score() {
-    if ( game != NULL )
-        delete game;
-    cout << "DECONSTRUCTOR\n";
 }
 
 int Score::scoring() {
     int total = 0;
     do {
-        unique_ptr<Frame> thisFrame(getFrame(currFrame));
-        char ball1 = thisFrame->getB1();
-        char ball2 = thisFrame->getB2();
+        Frame thisFrame(getFrame(currFrame));
+        char ball1 = thisFrame.getB1();
+        char ball2 = thisFrame.getB2();
         cout << "frame: " << currFrame + 1 << " || ball1 = " << ball1 << " || ball2 = "
             << ball2 << " || ";
         int pointsB1 = ballWorth(ball1);
@@ -40,34 +37,31 @@ int Score::scoring() {
         total += pointsB1 + pointsB2;
         int closedFrames = checkClosed();
         if (closedFrames == 3){ // a double before this frame
-            Frame * last2 = getFrame(currFrame-2);
-            Frame * last = getFrame(currFrame-1);
+            Frame last2 = getFrame(currFrame-2);
+            Frame last = getFrame(currFrame-1);
             // set the score for the frame 2 frames ago
-            int was = last2->getPoints();
-            last2->setPoints(was + pointsB1);
+            int was = last2.getPoints();
+            last2.setPoints(was + pointsB1);
             // now set the previous frame
-            was = last->getPoints();
-            last->setPoints(was + (pointsB1 * 2) + pointsB2);
+            was = last.getPoints();
+            last.setPoints(was + (pointsB1 * 2) + pointsB2);
                 // * 2 because those points carry over from last frame
-            delete last; delete last2;
             total += pointsB1 * 2 + pointsB2;
         } else if (closedFrames == 2) { // a strike before this frame
-            Frame * last = getFrame(currFrame-1);
-            int was = last->getPoints();
-            last->setPoints(was + pointsB1 + pointsB2);
+            Frame last = getFrame(currFrame-1);
+            int was = last.getPoints();
+            last.setPoints(was + pointsB1 + pointsB2);
             total += pointsB1 + pointsB2;
-            delete last;
         } else if (closedFrames == 1) { // a spare before this frame
-            Frame * last = getFrame(currFrame-1);
-            int was = last->getPoints();
-            last->setPoints(was + pointsB1);
+            Frame last = getFrame(currFrame-1);
+            int was = last.getPoints();
+            last.setPoints(was + pointsB1);
             total += pointsB1;
             cout << "\n in frame " << currFrame - 1 << " points were set to " << was+pointsB1 << ": "
-            << last->getPoints() << "\n";
-            delete last;
+            << last.getPoints() << "\n";
         }
 
-        thisFrame->setPoints(total);
+        thisFrame.setPoints(total);
         cout << "points = " << pointsB1 << " || total = " << total << "\n";
     }
     while (nextFrame());
@@ -93,11 +87,8 @@ bool Score::nextFrame() {
     return false;
 }
 
-Frame Score::* getFrame(const int frame) const {
-    unique_ptr<Frame> f(&Frame(game->getFrame(frame)));
-    /*f = &game->getFrame(frame);*/
-    /*Frame * f = &game->getFrame(frame);*/
-    return f;
+Frame Score::getFrame(const int frame) const {
+    return game.getFrame(frame);
 }
 
 Frame10 Score::getFrame10() const {

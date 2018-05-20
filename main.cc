@@ -37,7 +37,7 @@ int main() {
 
 	cout << tom << "\n" << sarah;
     cout << "\n";
-    Score score(&two);
+    Score score(two);
     cout << "score:: " << score << "\n";
     int s = score.scoring();
     cout << "hello::::" << s << "\n";
