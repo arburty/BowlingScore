@@ -40,8 +40,8 @@ int main() {
     Score score(two);
     cout << "score:: " << score << "\n";
     int s = score.scoring();
-    cout << "hello::::" << s << "\n";
-    cout << "score:: " << score << "\n";
+    cout << "\nscoreFromInitialization:: " << score << "\n";
+    cout << "scoreFromMethod:::: " << s << "\n";
 
     cout << two;
 }
